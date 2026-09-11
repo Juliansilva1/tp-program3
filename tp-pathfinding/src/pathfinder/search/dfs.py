@@ -17,12 +17,31 @@ class DepthFirstSearch:
         """
         # Initialize root node
         root = Node("", state=grid.initial, cost=0, parent=None, action=None)
+        
+        if grid.objective_test(root.state):
+            return Solution(root, {})
+
+        frontier = StackFrontier()
+        frontier.add(root)
 
         # Initialize expanded with the empty dictionary
         expanded = dict()
 
-        # Initialize frontier with the root node
-        # TODO Complete the rest!!
-        # ...
+        while True:
+            if frontier.is_empty():
+                return NoSolution(expanded)
+
+            node = frontier.remove()
+
+            if node.state in expanded:
+                continue
+            expanded[node.state] = True
+            for action in grid.actions(node.state):
+                new_state = grid.result(node.state, action)
+                if new_state not in expanded:
+                    new_node = Node('', new_state, node.cost + grid.individual_cost(node.state, action), node, action)
+                    if grid.objective_test(new_state):
+                        return Solution(new_node, expanded)
+                    frontier.add(new_node)
 
         return NoSolution(expanded)
