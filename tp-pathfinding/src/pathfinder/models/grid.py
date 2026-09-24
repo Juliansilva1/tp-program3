@@ -3,7 +3,8 @@ from src.pathfinder.models.node import Node
 
 class Grid:
     def __init__(
-        self, grid: list[list[Node]], initial: tuple[int, int], end: tuple[int, int]
+            self, grid: list[list[Node]], initial: tuple[int, int],
+            end: tuple[int, int]
     ) -> None:
         self.grid: list[list[Node]] = grid
         # Initial cell
@@ -108,6 +109,23 @@ class Grid:
         """
         new_pos = self.result(pos, action)
         return self.grid[new_pos[0]][new_pos[1]].cost
+
+    def heuristic(self, node: Node) -> int:
+        """
+        Calculate the Manhattan distance heuristic for a given node.
+
+        Args:
+            node (Node): The node for which to calculate the heuristic.
+
+        Returns:
+            int: The Manhattan distance heuristic value.
+        """
+        node_x = node.state[0]
+        node_y = node.state[1]
+        goal_x = self.end[0]
+        goal_y = self.end[1]
+
+        return abs(node_x - goal_x) + abs(node_y - goal_y)
 
     def __repr__(self) -> str:
         return f"Grid([[...], ...], {self.initial}, {self.end})"
