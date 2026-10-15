@@ -23,7 +23,25 @@ class AStarSearch:
         reached[root.state] = root.cost
 
         # Initialize frontier with the root node
-        # TODO Complete the rest!!
-        # ...
+        frontier = PriorityQueueFrontier()
+        frontier.add(root, root.cost + grid.heuristic(root))
 
+        while True:
+
+            if frontier.is_empty():
+                return NoSolution(reached)
+
+            node = frontier.pop()
+
+            if grid.objective_test(node.state):
+                return Solution(node, reached)
+
+            for action in grid.actions(node.state):
+                new_state = grid.result(node.state, action)
+                new_cost = node.cost + grid.individual_cost(node.state, action)
+                if new_state not in reached or new_cost < reached[new_state]:
+                    new_node = Node("", state = new_state, cost = new_cost, parent = node, action = action)
+                    reached[new_state] = new_cost
+                    frontier.add(new_node, new_node.cost + grid.heuristic(new_node))       
+        
         return NoSolution(reached)
